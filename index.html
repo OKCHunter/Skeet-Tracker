@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skeet Score Averaging and Classification</title>
+<meta name="theme-color" content="#1e2536">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Skeet Tracker">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjcyIiBmaWxsPSIjMWUyNTM2Ii8+CiAgPGNpcmNsZSBjeD0iMjU2IiBjeT0iMjEwIiByPSIxMzAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzRlOGRkOCIgc3Ryb2tlLXdpZHRoPSIzMCIvPgogIDxjaXJjbGUgY3g9IjI1NiIgY3k9IjIxMCIgcj0iODAiICBmaWxsPSJub25lIiBzdHJva2U9IiM0ZThkZDgiIHN0cm9rZS13aWR0aD0iMjIiLz4KICA8Y2lyY2xlIGN4PSIyNTYiIGN5PSIyMTAiIHI9IjMwIiAgZmlsbD0iIzRlOGRkOCIvPgogIDx0ZXh0IHg9IjI1NiIgeT0iNDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIgogICAgICAgIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLHNlcmlmIiBmb250LXNpemU9IjY4IiBmb250LXdlaWdodD0iYm9sZCIKICAgICAgICBmaWxsPSIjNmJhOGU4IiBsZXR0ZXItc3BhY2luZz0iMyI+U0tFRVQ8L3RleHQ+Cjwvc3ZnPg==">
+<style>
+  html,body{margin:0;height:100%;background:#1e2536;color:#6ba8e8;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Georgia,serif;}
+  .wrap{height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:20px;}
+  .wrap h1{font-size:20px;margin:0;color:#6ba8e8;letter-spacing:.5px;}
+  .wrap p{color:#7d8aa3;font-size:14px;margin:0;}
+  .links{display:flex;gap:14px;margin-top:6px;flex-wrap:wrap;justify-content:center;}
+  .links a{color:#6ba8e8;text-decoration:none;border:1px solid #2f3a52;border-radius:8px;
+    padding:10px 16px;background:#28304a;font-size:14px;}
+</style>
+<script>
+  (function(){
+    var ua = navigator.userAgent || "";
+    var phone = /Android|iPhone|iPod|webOS|BlackBerry|IEMobile|Opera Mini|Windows Phone|Mobile/i.test(ua);
+    var smallTouch = ("ontouchstart" in window) &&
+                     Math.min(screen.width || 9999, screen.height || 9999) <= 820;
+    var isMobile = phone || smallTouch;
+    var forced = null;
+    try { forced = new URLSearchParams(location.search).get("app"); } catch(e){}
+    if(forced === "desktop") isMobile = false;
+    if(forced === "mobile")  isMobile = true;
+    var dest = isMobile ? "skeet_mobile.html" : "desktop.html";
+    location.replace(dest + (location.hash || ""));
+  })();
+</script>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Skeet Score Averaging &amp; Classification</h1>
+    <p>Choose a version:</p>
+    <div class="links">
+      <a href="desktop.html">Desktop &mdash; Skeet Tracker</a>
+      <a href="skeet_mobile.html">Mobile &mdash; Skeet Mobile</a>
+    </div>
+  </div>
+</body>
+</html>

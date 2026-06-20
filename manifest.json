@@ -1,0 +1,19 @@
+{
+  "name": "Skeet Score Averaging and Classification",
+  "short_name": "Skeet Tracker",
+  "description": "NSSA skeet score averaging and classification tracker",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#1e2536",
+  "theme_color": "#1e2536",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjcyIiBmaWxsPSIjMWUyNTM2Ii8+CiAgPGNpcmNsZSBjeD0iMjU2IiBjeT0iMjEwIiByPSIxMzAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzRlOGRkOCIgc3Ryb2tlLXdpZHRoPSIzMCIvPgogIDxjaXJjbGUgY3g9IjI1NiIgY3k9IjIxMCIgcj0iODAiICBmaWxsPSJub25lIiBzdHJva2U9IiM0ZThkZDgiIHN0cm9rZS13aWR0aD0iMjIiLz4KICA8Y2lyY2xlIGN4PSIyNTYiIGN5PSIyMTAiIHI9IjMwIiAgZmlsbD0iIzRlOGRkOCIvPgogIDx0ZXh0IHg9IjI1NiIgeT0iNDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIgogICAgICAgIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLHNlcmlmIiBmb250LXNpemU9IjY4IiBmb250LXdlaWdodD0iYm9sZCIKICAgICAgICBmaWxsPSIjNmJhOGU4IiBsZXR0ZXItc3BhY2luZz0iMyI+U0tFRVQ8L3RleHQ+Cjwvc3ZnPg==",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
