@@ -1,0 +1,84 @@
+// Skeet Tracker — Service Worker
+// Caches the app shell (HTML + manifest) so the app loads offline.
+// Firebase Firestore handles offline data sync independently.
+
+const CACHE_NAME = "skeet-tracker-v5";
+const SHELL = [
+  "./index.html",
+  "./desktop.html",
+  "./skeet_mobile.html",
+  "./manifest.json"
+];
+
+// Install: cache the app shell immediately.
+self.addEventListener("install", (e) => {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL))
+  );
+  self.skipWaiting();
+});
+
+// Activate: remove any old caches from previous versions.
+self.addEventListener("activate", (e) => {
+  e.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(
+        keys
+          .filter((k) => k !== CACHE_NAME)
+          .map((k) => caches.delete(k))
+      )
+    )
+  );
+  self.clients.claim();
+});
+
+// Fetch: serve the app shell from cache; fall back to network.
+// Firebase SDK and Firestore requests always go to the network.
+self.addEventListener("fetch", (e) => {
+  const url = new URL(e.request.url);
+
+  // Let Firebase, Google APIs, and CDN requests pass through to the network.
+  if (
+    url.hostname.includes("firebase") ||
+    url.hostname.includes("googleapis") ||
+    url.hostname.includes("gstatic") ||
+    url.hostname.includes("firestore")
+  ) {
+    return;
+  }
+
+  // HTML pages / navigations: NETWORK-FIRST so an updated page on GitHub shows
+  // up immediately when online; fall back to the cache only when offline.
+  const accept = e.request.headers.get("accept") || "";
+  const isHTML = e.request.mode === "navigate" || accept.includes("text/html");
+  if (isHTML) {
+    e.respondWith(
+      fetch(e.request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone)).catch(() => {});
+          }
+          return response;
+        })
+        .catch(() =>
+          caches.match(e.request).then((cached) => cached || caches.match("./index.html"))
+        )
+    );
+    return;
+  }
+
+  // Other app-shell files: cache first, then network.
+  e.respondWith(
+    caches.match(e.request).then((cached) => {
+      if (cached) return cached;
+      return fetch(e.request).then((response) => {
+        if (response && response.status === 200 && response.type === "basic") {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
+        }
+        return response;
+      });
+    })
+  );
+});
