@@ -28,7 +28,9 @@
     padding:10px 14px;border-bottom:1px solid #2a3450;
     padding-top:calc(10px + env(safe-area-inset-top));}
   .appbar .title{font-size:18px;font-weight:bold;color:var(--accent2);
-    letter-spacing:.5px;margin-bottom:8px;}
+    letter-spacing:.5px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:baseline;}
+  .appbar .title .ver{font-size:11px;font-weight:normal;color:var(--muted);
+    font-family:'Courier New',monospace;letter-spacing:0;}
   .userrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
   #userSelect{flex:1 1 auto;min-width:120px;background:var(--entry);color:var(--accent2);
     border:1px solid #2f3a52;border-radius:8px;padding:9px 10px;font-size:16px;font-weight:bold;}
@@ -79,14 +81,16 @@
   .status.err{color:var(--danger);}
   .status.ok{color:var(--ok);}
 
-  table.standing{width:100%;border-collapse:collapse;font-size:15px;}
-  table.standing th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;
-    padding:6px 8px;text-align:right;border-bottom:1px solid #3a4560;}
+  table.standing{width:100%;border-collapse:collapse;font-size:13px;}
+  table.standing th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;
+    padding:5px 6px;text-align:right;border-bottom:1px solid #3a4560;}
   table.standing th:first-child{text-align:left;}
-  table.standing td{padding:9px 8px;border-bottom:1px solid #232b40;}
+  table.standing th.th-sub{border-left:1px solid #232b40;text-align:right;}
+  table.standing td{padding:8px 6px;border-bottom:1px solid #232b40;}
   table.standing td.g{font-weight:bold;color:var(--text);}
   table.standing td.avg{text-align:right;color:var(--accent2);font-variant-numeric:tabular-nums;}
-  table.standing td.cls{text-align:right;font-weight:bold;color:var(--text);width:64px;}
+  table.standing td.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--text);}
+  table.standing td.cls{text-align:right;font-weight:bold;color:var(--text);width:48px;}
   table.standing tr.hoa td,table.standing tr.haa td{border-top:2px solid #3a4560;color:var(--muted);}
   table.standing tr.hoa td.g,table.standing tr.haa td.g{color:var(--accent);}
 
@@ -112,7 +116,7 @@
 <body>
 
   <header class="appbar">
-    <div class="title">Skeet Score Avg and Class &mdash; Mobile</div>
+    <div class="title">Skeet Score Avg and Class &mdash; Mobile<span class="ver">v1.1</span></div>
     <div class="userrow">
       <select id="userSelect" title="Shooter"></select>
       <button class="iconbtn" id="btnEditUser" title="Edit profile">&#9881;</button>
@@ -130,7 +134,15 @@
     <section class="card" id="standingCard">
       <h2>Current Standing</h2>
       <table class="standing" id="standingTable">
-        <thead><tr><th></th><th>Average</th><th>Next&nbsp;Class</th></tr></thead>
+        <thead>
+          <tr>
+            <th style="text-align:left"></th>
+            <th>Avg</th>
+            <th>Class</th>
+            <th>Shot (YTD)</th>
+            <th class="th-sub">Broke (YTD)</th>
+          </tr>
+        </thead>
         <tbody></tbody>
       </table>
     </section>
@@ -487,26 +499,46 @@ function renderUserBar(){
     sel.appendChild(opt);
   }
 }
+function ytdTargets(){
+  const yr = curYear();
+  const out = {};
+  for(const g of GAUGES){
+    let s=0, b=0;
+    for(const r of DB){
+      if(r.gauge===g && yearOf(r.date)===yr){ s+=r.shot||0; b+=(r.broke==null?0:r.broke); }
+    }
+    out[g] = {shot:s, broke:b};
+  }
+  return out;
+}
 function renderStanding(){
   const sum = currentSummary();
+  const ytd = ytdTargets();
   const tb = document.querySelector("#standingTable tbody");
   tb.innerHTML = "";
   for(const g of GAUGES){
     const [avg,next] = sum[g];
+    const {shot, broke} = ytd[g];
+    const shotStr  = shot  ? shot  : "\u2013";
+    const brokeStr = shot  ? broke : "\u2013";
     tb.innerHTML += `<tr><td class="g">${g}</td>`+
       `<td class="avg">${avg==null?"\u2013":avg.toFixed(4)}</td>`+
-      `<td class="cls">${next||"\u2013"}</td></tr>`;
+      `<td class="cls">${next||"\u2013"}</td>`+
+      `<td class="num">${shotStr}</td>`+
+      `<td class="num">${brokeStr}</td></tr>`;
   }
   const hoa = hoaAverage();
   const hoaCls = hoa.avg!=null ? classFromAvg("HOA", hoa.avg) : "";
   tb.innerHTML += `<tr class="hoa"><td class="g">HOA (4-gun)</td>`+
     `<td class="avg">${hoa.avg==null?"\u2013":hoa.avg.toFixed(4)}</td>`+
-    `<td class="cls">${hoaCls||"\u2013"}</td></tr>`;
+    `<td class="cls">${hoaCls||"\u2013"}</td>`+
+    `<td colspan="2"></td></tr>`;
   const haa = hoa500Average();
   const haaCls = haa.avg!=null ? classFromAvg("HOA500", haa.avg) : "";
   tb.innerHTML += `<tr class="haa"><td class="g">HOA (5-gun)</td>`+
     `<td class="avg">${haa.avg==null?"\u2013":haa.avg.toFixed(4)}</td>`+
-    `<td class="cls">${haaCls||"\u2013"}</td></tr>`;
+    `<td class="cls">${haaCls||"\u2013"}</td>`+
+    `<td colspan="2"></td></tr>`;
 }
 function refreshAll(){ renderStanding(); }
 
